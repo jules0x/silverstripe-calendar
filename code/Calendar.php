@@ -115,7 +115,7 @@ class Calendar extends ViewableData {
 			$years[] = $this->defaultYear;
 		}
 		foreach($years as $year) {
-			if(is_numeric($year) && is_int($year + 0) && $year >= 1) {
+			if(is_numeric($year) && is_int($year + 0) && checkdate(1, 1, $year)) {
 				$this->year = $year;
 				break;
 			}
@@ -223,8 +223,7 @@ class Calendar extends ViewableData {
 		}
 
 		// Css Requirements
-		Requirements::javascript(SAPPHIRE_DIR .'/thirdparty/jquery/jquery.js');
-		Requirements::javascript('calendar/javascript/Calendar.js');
+
 		Requirements::themedCSS('calendar');
 	}
 
