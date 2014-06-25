@@ -47,7 +47,7 @@ abstract class CalendarAbstractTimeView extends CalendarAbstractView {
 		$month = $calendar->getMonth();
 		if(! $month) $month = 1;
 		$year = $calendar->getYear();
-		$date = mktime(0, 0, 0, $month, $day, $year);
+		$date = strtotime("$year-$month-$day");
 		$params = $this->getLinkParams($date);
 		$title = $this->getCustomisedTitle($day, $month, $year);
 		return array($params, $title);
@@ -145,7 +145,7 @@ abstract class CalendarAbstractTimeView extends CalendarAbstractView {
 		
 		$subPeriods = $this->getSubPeriods();
 		
-		$todayNow = mktime();
+		$todayNow = strtotime('now');
 		
 		foreach($subPeriods as $subPeriod) {
 			$period = array();
@@ -185,7 +185,7 @@ abstract class CalendarAbstractTimeView extends CalendarAbstractView {
 				$subPeriodParams = array();
 					
 				$subPeriodParams['IsTodayNow'] = $subPeriodStart <= $todayNow && $todayNow <= $subPeriodEnd;
-				$subPeriodParams['IsToday'] = $day == date('j') && $month == date('n') && $year == date('Y');
+				$subPeriodParams['IsToday'] = strtotime('today', $date) == strtotime('today', $todayNow);
 				$subPeriodParams['IsPast'] = $subPeriodStart < $todayNow;
 				$subPeriodParams['DayClass'] = eval($this->dayClass);
 				

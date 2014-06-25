@@ -125,7 +125,7 @@ abstract class CalendarAbstractWeekView extends CalendarAbstractView {
 
 		// 3) Weeks Values
 
-		$today = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
+		$today = strtotime('today');
 
 		foreach($weeks as $week) {
 
@@ -193,8 +193,6 @@ abstract class CalendarAbstractWeekView extends CalendarAbstractView {
 					$dateParams['Link'] = $linkCalendar->Link($linkController, $this->dayLinkView, $params);
 				}
 
-
-
 				$this->extend('updateDateParams', $date, $dateParams, $currentCalendar);
 
 				$days[] = new ArrayData($dateParams);
@@ -221,9 +219,10 @@ abstract class CalendarAbstractWeekView extends CalendarAbstractView {
 			if(date('N', $day) == 1) {
 				$beforeMonday = false;
 			}
+			$diff = $beforeMonday ? -1 : 1;
 
 			while(date('N', $date) != date('N', $day)) {
-				$date = mktime(0, 0, 0, date('n', $date), date('j', $date) + ($beforeMonday ? -1 : 1), date('Y', $date));
+				$date = strtotime("$diff day", $date);
 			}
 
 			$dates[] = $date;
@@ -238,7 +237,7 @@ abstract class CalendarAbstractWeekView extends CalendarAbstractView {
 		$days = array();
 		for($i = 1; $i <= 7; $i++) {
 			if(! in_array($day, $this->daysRemoved)) {
-				$days[] = mktime(0, 0, 0, 1, $day, 1);
+				$days[] = strtotime("1-1-$day");
 			}
 			$day = $day < 7 ? $day + 1 : 1;
 		}
@@ -250,12 +249,12 @@ abstract class CalendarAbstractWeekView extends CalendarAbstractView {
 
 		// 1) Research of the week
 
-		$firstDate = mktime(0, 0, 0, 1, 1, $year);
-		while(date('W', $firstDate ) != 1) {
-			$firstDate = mktime(0, 0, 0, date('n', $firstDate), date('j', $firstDate) + 1, date('Y', $firstDate));
+		$firstDate = strtotime("{$year}-1-1");
+		while(date('W', $firstDate) != 1) {
+			$firstDate = strtotime('+1 day', $firstDate);
 		}
 		while(date('W', $firstDate) < $week) {
-			$firstDate = mktime(0, 0, 0, date('n', $firstDate), date('j', $firstDate) + 7, date('Y', $firstDate));
+			$firstDate = strtotime('+1 week', $firstDate);
 		}
 
 		// 2) Research of the first day of the week
@@ -264,7 +263,7 @@ abstract class CalendarAbstractWeekView extends CalendarAbstractView {
 		if($fromStartDay && $this->dayStart != 1) {
 			$diff += 8 - $this->dayStart;
 		}
-		$firstDate = mktime(0, 0, 0, date('n', $firstDate), date('j', $firstDate) - $diff, date('Y', $firstDate));
+		$firstDate = strtotime("-$diff days", $firstDate);
 
 		return $firstDate;
 	}

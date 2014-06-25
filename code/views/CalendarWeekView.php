@@ -18,19 +18,13 @@ class CalendarWeekView extends CalendarAbstractTimeView {
 	
 	function prevLinkParams(Calendar $calendar) {
 		$date = $this->getWeekStartDay($calendar->getDay(), $calendar->getMonth(), $calendar->getYear());
-		$dayValue = date('j', $date) - ($this->number * 7);
-		$monthValue = date('n', $date);
-		$yearValue = date('Y', $date);
-		$date = mktime(0, 0, 0, $monthValue, $dayValue, $yearValue);
+		$date = strtotime("-$this->number weeks", $date);
 		return $this->getLinkParams($date);
 	}
 	
 	function nextLinkParams(Calendar $calendar) {
 		$date = $this->getWeekStartDay($calendar->getDay(), $calendar->getMonth(), $calendar->getYear());
-		$dayValue = date('j', $date) + ($this->number * 7);
-		$monthValue = date('n', $date);
-		$yearValue = date('Y', $date);
-		$date = mktime(0, 0, 0, $monthValue, $dayValue, $yearValue);
+		$date = strtotime("+$this->number weeks", $date);
 		return $this->getLinkParams($date);
 	}
 	
@@ -48,10 +42,10 @@ class CalendarWeekView extends CalendarAbstractTimeView {
 		$lastDate = $this->getWeekStartDay($day, $month, $year);
 		
 		while(date('N', $lastDate) != $this->dayStart) {
-			$lastDate = mktime(0, 0, 0, date('n', $lastDate), date('j', $lastDate) - 1, date('Y', $lastDate));
+			$lastDate = strtotime('-1 day', $lastDate);
 		}
 		while(in_array(date('N', $lastDate), $this->daysRemoved)) {
-			$lastDate = mktime(0, 0, 0, date('n', $lastDate), date('j', $lastDate) + 1, date('Y', $lastDate));
+			$lastDate = strtotime('+1 day', $lastDate);
 		}
 		
 		for($i = 0; $i < $this->number; $i++) {
@@ -60,7 +54,7 @@ class CalendarWeekView extends CalendarAbstractTimeView {
 				if(! in_array(date('N', $lastDate), $this->daysRemoved)) {
 					$datesGroup[] = $lastDate;
 				}
-				$lastDate = mktime(0, 0, 0, date('n', $lastDate), date('j', $lastDate) + 1, date('Y', $lastDate));
+				$lastDate = strtotime('+1 day', $lastDate);
 			}
 			$datesGroups[] = $datesGroup;
 		}
@@ -72,10 +66,7 @@ class CalendarWeekView extends CalendarAbstractTimeView {
 		$date = $this->getWeekStartDay($day, $month, $year);
 		$result = eval($this->viewTitle);
 		if($this->number > 1) {
-			$dayValue = date('j', $date) + (($this->number - 1) * 7);
-			$monthValue = date('n', $date);
-			$yearValue = date('Y', $date);
-			$date = mktime(0, 0, 0, $monthValue, $dayValue, $yearValue);
+			$date = strtotime(($this->number - 1) . ' weeks', $date);
 			$result .= $this->viewTitleDelimiter . eval($this->viewTitle);
 		}
 		return $result;
@@ -102,10 +93,10 @@ class CalendarWeekView extends CalendarAbstractTimeView {
 	// Private Functions
 	
 	private function getWeekStartDay($day, $month, $year) {
-		$date = mktime(0, 0, 0, $month, $day, $year);
+		$date = strtotime("$year-$month-$day");
 		
 		while(date('N', $date) > 1) { // It means that the 1st day of this week is not Monday
-			$date = mktime(0, 0, 0, date('n', $date), date('j', $date) - 1, date('Y', $date));
+			$date = strtotime('-1 day', $date);
 		}
 		
 		return $date;
@@ -113,7 +104,7 @@ class CalendarWeekView extends CalendarAbstractTimeView {
 	
 	private function getWeekEndDay($day, $month, $year) {
 		$date = $this->getWeekStartDay($day, $month, $year);
-		$date = mktime(0, 0, 0, date('n', $date), date('j', $date) + 6, date('Y', $date));
+		$date = strtotime('+6 days', $date);
 		return $date;
 	}
 	

@@ -12,12 +12,16 @@ class CalendarDayView extends CalendarAbstractTimeView {
 	}
 	
 	function prevLinkParams(Calendar $calendar) {
-		$date = mktime(0, 0, 0, $calendar->getMonth(), $calendar->getDay() - $this->number, $calendar->getYear());
+		$date = array($calendar->getYear(), $calendar->getMonth(), $calendar->getDay());
+		$date = strtotime(implode('-', $date));
+		$date = strtotime("-$this->number days", $date);
 		return $this->getLinkParams($date);
 	}
 	
 	function nextLinkParams(Calendar $calendar) {
-		$date = mktime(0, 0, 0, $calendar->getMonth(), $calendar->getDay() + $this->number, $calendar->getYear());
+		$date = array($calendar->getYear(), $calendar->getMonth(), $calendar->getDay());
+		$date = strtotime(implode('-', $date));
+		$date = strtotime("+$this->number days", $date);
 		return $this->getLinkParams($date);
 	}
 	
@@ -30,10 +34,10 @@ class CalendarDayView extends CalendarAbstractTimeView {
 		
 		for($i = 0; $i < $this->number; $i++) {
 			if($i == 0) {
-				$lastDate = mktime(0, 0, 0, $month, $day, $year);
+				$lastDate = strtotime("$year-$month-$day");
 			}
 			else {
-				$lastDate = mktime(0, 0, 0, date('n', $lastDate), date('j', $lastDate) + 1, date('Y', $lastDate));
+				$lastDate = strtotime('+1 day', $lastDate);
 			}
 			$datesGroups[] = array($lastDate);
 		}
@@ -42,10 +46,10 @@ class CalendarDayView extends CalendarAbstractTimeView {
 	}
 	
 	function getCustomisedTitle($day, $month, $year) {
-		$date = mktime(0, 0, 0, $month, $day, $year);
+		$date = strtotime("$year-$month-$day");
 		$result = eval($this->viewTitle);
 		if($this->number > 1) {
-			$date = mktime(0, 0, 0, $month, $day + $this->number - 1, $year);
+			$date = strtotime(($this->number - 1) . ' days', $date);
 			$result .= $this->viewTitleDelimiter . eval($this->viewTitle);
 		}
 		return $result;

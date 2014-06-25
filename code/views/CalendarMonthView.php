@@ -20,12 +20,16 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 	function needsDay() {return false;}
 
 	function prevLinkParams(Calendar $calendar) {
-		$date = mktime(0, 0, 0, $calendar->getMonth() - $this->number, 1, $calendar->getYear());
+		$date = array($calendar->getYear(), $calendar->getMonth(), 1);
+		$date = strtotime(implode('-', $date));
+		$date = strtotime("-$this->number months", $date);
 		return $this->getLinkParams($date);
 	}
 
 	function nextLinkParams(Calendar $calendar) {
-		$date = mktime(0, 0, 0, $calendar->getMonth() + $this->number, 1, $calendar->getYear());
+		$date = array($calendar->getYear(), $calendar->getMonth(), 1);
+		$date = strtotime(implode('-', $date));
+		$date = strtotime("+$this->number months", $date);
 		return $this->getLinkParams($date);
 	}
 
@@ -33,7 +37,7 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 		$month = $calendar->getMonth();
 		if(! $month) $month = 1;
 		$year = $calendar->getYear();
-		$date = mktime(0, 0, 0, $month, 1, $year);
+		$date = strtotime("$year-$month-1");
 		$params = $this->getLinkParams($date);
 		$title = $this->getCustomisedTitle($month, $year);
 		return array($params, $title);
@@ -64,7 +68,7 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 
 			// 1) Single Values
 
-			$monthDate = mktime(0, 0, 0, $month, 1, $year);
+			$monthDate = strtotime("$year-$month-1");
 			$values['ExtraInnerClass'] = eval($this->monthClass) . " year$year";
 			$values['IsNowYear'] = $year == $nowYear;
 			$values['IsPastYear'] = $year < $nowYear;
@@ -85,7 +89,7 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 	// Private Functions
 
 	protected function MonthWeeks($month, $year) {
-		$firstDate = mktime(0, 0, 0, $month, 1, $year);
+		$firstDate = strtotime("$year-$month-1");
 		$firstDateWeek = date('W', $firstDate);
 		$firstDateWeekYear = $year;
 
@@ -94,7 +98,7 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 		}
 
 		$weekFirstDate = $this->getWeekStartDay($firstDateWeek, $firstDateWeekYear, true);
-		$nextWeekFirstDate = mktime(0, 0, 0, date('n', $weekFirstDate), date('j', $weekFirstDate) + 7, date('Y', $weekFirstDate));
+		$nextWeekFirstDate = strtotime('+1 week', $weekFirstDate);
 
 		if(date('j', $nextWeekFirstDate) == 1) {
 			$weekFirstDate = $nextWeekFirstDate;
@@ -103,7 +107,7 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 		while(date('Y', $weekFirstDate) < $year || (date('Y', $weekFirstDate) == $year && date('n', $weekFirstDate) <= $month)) {
 			$weekMonday = $weekFirstDate;
 			while(date('N', $weekMonday) != 1) {
-				$weekMonday = mktime(0, 0, 0, date('n', $weekMonday), date('j', $weekMonday) + 1, date('Y', $weekMonday));
+				$weekMonday = strtotime('+1 day', $weekMonday);
 			}
 			$week = date('W', $weekMonday);
 			$yearOfWeek = date('Y', $weekMonday);
@@ -120,7 +124,7 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 			}
 
 			$weeks[] = array('week' => $week, 'yearOfWeek' => $yearOfWeek, 'month' => $month, 'yearOfMonth' => $year);
-			$weekFirstDate = mktime(0, 0, 0, date('n', $weekFirstDate), date('j', $weekFirstDate) + 7, date('Y', $weekFirstDate));
+			$weekFirstDate = strtotime('+1 week', $weekFirstDate);
 		}
 
 		return $weeks;
@@ -129,10 +133,10 @@ class CalendarMonthView extends CalendarAbstractWeekView {
 	// Other Functions
 
 	function getCustomisedTitle($month, $year) {
-		$date = mktime(0, 0, 0, $month, 1, $year);
+		$date = strtotime("$year-$month-1");
 		$result = eval($this->viewTitle);
 		if($this->number > 1) {
-			$date = mktime(0, 0, 0, $month + $this->number - 1, 1, $year);
+			$date = strtotime(($this->number - 1) . ' months', $date);
 			$result .= $this->viewTitleDelimiter . eval($this->viewTitle);
 		}
 		return $result;

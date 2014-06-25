@@ -38,18 +38,22 @@ class CalendarYearView extends CalendarMonthView {
 	}
 	
 	function prevLinkParams(Calendar $calendar) {
-		$date = mktime(0, 0, 0, 1, 1, $calendar->getYear() - $this->number);
+		$date = array($calendar->getYear(), 1, 1);
+		$date = strtotime(implode('-', $date));
+		$date = strtotime("-$this->number years", $date);
 		return $this->getLinkParams($date);
 	}
 	
 	function nextLinkParams(Calendar $calendar) {
-		$date = mktime(0, 0, 0, 1, 1, $calendar->getYear() + $this->number);
+		$date = array($calendar->getYear(), 1, 1);
+		$date = strtotime(implode('-', $date));
+		$date = strtotime("+$this->number years", $date);
 		return $this->getLinkParams($date);
 	}
 	
 	function viewLinkParamsAndTitle(Calendar $calendar) {
 		$year = $calendar->getYear();
-		$date = mktime(0, 0, 0, 1, 1, $year);
+		$date = strtotime("$year-1-1");
 		$params = $this->getLinkParams($date);
 		$title = $this->getCustomisedTitle($year);
 		return array($params, $title);
@@ -138,7 +142,7 @@ class CalendarYearView extends CalendarMonthView {
 			
 			// 1) Single Values
 			
-			$monthDate = mktime(0, 0, 0, $month, 1, $year);
+			$monthDate = strtotime("$year-$month-1");
 			$values['IsNow'] = $calendar['IsNow'] && $month == $nowMonth;
 			$values['IsPast'] = $calendar['IsPast'] || ($calendar['IsNow'] && $month < $nowMonth);
 			$values['MonthClass'] = eval($this->monthClass);
@@ -188,10 +192,10 @@ class CalendarYearView extends CalendarMonthView {
 	// Other Functions
 	
 	function getCustomisedTitle($year) {
-		$date = mktime(0, 0, 0, 1, 1, $year);
+		$date = strtotime("$year-1-1");
 		$result = eval($this->viewTitle);
 		if($this->number > 1) {
-			$date = mktime(0, 0, 0, 1, 1, $year + $this->number - 1);
+			$date = strtotime(($this->number - 1) . ' years', $date);
 			$result .= $this->viewTitleDelimiter . eval($this->viewTitle);
 		}
 		return $result;

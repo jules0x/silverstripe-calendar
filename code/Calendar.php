@@ -123,6 +123,7 @@ class Calendar extends ViewableData {
 		if(! $this->year) {
 			$this->year = date('Y');
 		}
+		$date = strtotime("{$this->year}-1-1");
 
 		// 3) Month Setting
 
@@ -139,16 +140,12 @@ class Calendar extends ViewableData {
 			}
 			foreach($months as $month) {
 				if(is_numeric($month) && is_int($month + 0)) {
-					if($month >= 1 && $month <= 12) {
+					if(checkdate($month, 1, $this->year)) {
 						$this->month = $month;
-					}
-					else if($month < 1) {
-						$this->year = $this->year > 1 ?	$this->year - 1 : date('Y');
-						$this->month = 12;
-					}
-					else {
-						$this->year++;
-						$this->month = 1;
+					} else {
+						$date = strtotime($month < 1 ? 'previous month' : 'next year', $date);
+						$this->year = date('Y', $date);
+						$this->month = date('n', $date);
 					}
 					break;
 				}
@@ -156,6 +153,7 @@ class Calendar extends ViewableData {
 			if(! $this->month) {
 				$this->month = date('n');
 			}
+			$date = strtotime("{$this->year}-{$this->month}-1");
 		}
 
 		// 4) Day Setting
@@ -173,35 +171,13 @@ class Calendar extends ViewableData {
 			$days[] = date('j');
 			foreach($days as $day) {
 				if(is_numeric($day) && is_int($day + 0)) {
-					if($day >= 1 && $day <= 28) {
+					if(checkdate($this->month, $day, $this->year)) {
 						$this->day = $day;
-					}
-					else if($day < 1) {
-						if($this->month == 1) {
-							$this->year = $this->year > 1 ?	$this->year - 1 : date('Y');
-							$this->month = 12;
-						}
-						else {
-							$this->month--;
-						}
-						$dayAfter = mktime(0, 0, 0, $this->month + 1, 1, $this->year);
-						$this->day = date('j', mktime(0, 0, 0, date('n', $dayAfter), date('j', $dayAfter) - 1, date('Y', $dayAfter)));
-					}
-					else {
-						$date = mktime(0, 0, 0, $this->month, $day, $this->year);
-						if(date('n', $date) == $this->month && date('j', $date) == $day && date('Y', $date) == $this->year) {
-							$this->day = $day;
-						}
-						else {
-							if($this->month == 12) {
-								$this->year++;
-								$this->month = 1;
-							}
-							else {
-								$this->month++;
-							}
-							$this->day = 1;
-						}
+					} else {
+						$date = strtotime($day < 1 ? 'last day of previous month' : 'first day of next month', $date);
+						$this->year = date('Y', $date);
+						$this->month = date('n', $date);
+						$this->day = date('j', $date);
 					}
 					break;
 				}
@@ -224,7 +200,7 @@ class Calendar extends ViewableData {
 
 		// Css Requirements
 
-		Requirements::themedCSS('calendar');
+		Requirements::themedCSS('calendar', CALENDAR_DIR);
 	}
 
 	// Field Functions
@@ -326,7 +302,7 @@ class Calendar extends ViewableData {
 	}
 
 	function Link($controller, CalendarAbstractView $view, array $params) {
-		$link = is_string($controller) ? $controller : $controller->URLSegment;
+		$link = is_string($controller) ? $controller : $controller->RelativeLink();
 		$params = array_merge(array('view' => $view->getName()), $params);
 		foreach($params as $id => $val) {
 			$link = HTTP::RAW_setGetVar("$this->name[$id]", $val, $link);
