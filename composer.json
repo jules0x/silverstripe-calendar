@@ -1,7 +1,7 @@
 {
 	"name": "romain.louis/silverstripe-calendar",
 	"description": "A calendar module for SilverStripe with multiple view options and content inclusion such as events",
-	"type": "silverstripe-module",
+	"type": "silverstripe-vendormodule",
 	"keywords": ["silverstripe", "module", "calendar", "event"],
 	"homepage": "https://gitlab.com/romain.louis/silverstripe-calendar",
 	"license": "BSD-3-Clause",
@@ -21,7 +21,7 @@
 	},
 
 	"require": {
-		"silverstripe/framework": "~3.0"
+		"silverstripe/framework": "^4"
 	},
 
 	"extra": {
