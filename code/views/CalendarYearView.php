@@ -1,5 +1,8 @@
 <?php
 
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ArrayData;
+
 class CalendarYearView extends CalendarMonthView {
 	
 	// Attributes

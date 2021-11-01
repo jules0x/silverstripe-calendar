@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\View\ViewableData;
+
 abstract class CalendarAbstractView extends ViewableData {
 
 	// Static

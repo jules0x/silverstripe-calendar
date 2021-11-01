@@ -1,5 +1,8 @@
 <?php
 
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ArrayData;
+
 abstract class CalendarAbstractTimeView extends CalendarAbstractView {
 	
 	// Attributes
@@ -204,5 +207,4 @@ abstract class CalendarAbstractTimeView extends CalendarAbstractView {
 		return new ArrayData($calendar);
 	}
 }
- 
-?>
+

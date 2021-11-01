@@ -1,5 +1,12 @@
 <?php
 
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ArrayData;
+use SilverStripe\Control\Session;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\ViewableData;
+use SilverStripe\Control\HTTP;
+
 class Calendar extends ViewableData {
 
 	// Static
