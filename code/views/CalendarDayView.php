@@ -55,5 +55,3 @@ class CalendarDayView extends CalendarAbstractTimeView {
 		return $result;
 	}
 }
- 
-?>

@@ -32,5 +32,3 @@ class CalendarTimePeriod {
 	function getStartTime() {return $this->startTime;}
 	function getEndTime() {return $this->endTime;}
 }
-
-?>

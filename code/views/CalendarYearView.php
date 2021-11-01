@@ -204,5 +204,3 @@ class CalendarYearView extends CalendarMonthView {
 		return $result;
 	}
 }
- 
-?>

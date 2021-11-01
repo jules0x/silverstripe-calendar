@@ -114,5 +114,3 @@ class CalendarWeekView extends CalendarAbstractTimeView {
 		}
 	}
 }
- 
-?>

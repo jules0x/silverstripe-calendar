@@ -2,7 +2,8 @@
 
 use SilverStripe\View\ViewableData;
 
-abstract class CalendarAbstractView extends ViewableData {
+abstract class CalendarAbstractView extends ViewableData
+{
 
 	// Static
 
@@ -23,29 +24,26 @@ abstract class CalendarAbstractView extends ViewableData {
 
 	// Contructor
 
-	function __construct($name, $number = 1) {
+	function __construct($name, $number = 1)
+	{
 		parent::__construct();
-		if(is_string($name)) {
-			if(! in_array($name, self::$names)) {
+		if (is_string($name)) {
+			if (!in_array($name, self::$names)) {
 				$this->name = $name;
 				self::$names[] = $name;
-			}
-			else {
+			} else {
 				user_error("CalendarAbstractView::__construct() : you cannot set the \$name attribute with the value '$name' because an other view with this name already exists", E_USER_ERROR);
 			}
-		}
-		else {
+		} else {
 			user_error('CalendarAbstractView::__construct() : you cannot set the $name attribute with a non string value', E_USER_ERROR);
 		}
-		if(is_int($number + 0)) {
-			if($number >= 1) {
+		if (is_int($number + 0)) {
+			if ($number >= 1) {
 				$this->number = $number;
-			}
-			else {
+			} else {
 				user_error('CalendarAbstractView::__construct() : you cannot set the $number attribute with a value less than 1', E_USER_ERROR);
 			}
-		}
-		else {
+		} else {
 			user_error('CalendarAbstractView::__construct() : you cannot set the $number attribute with a non integer value', E_USER_ERROR);
 		}
 		$this->init();
@@ -72,42 +70,60 @@ abstract class CalendarAbstractView extends ViewableData {
 
 	// Functions
 
-	function getName() {return $this->name;}
+	function getName()
+	{
+		return $this->name;
+	}
 
-	function setContainerClass($containerClass) {$this->containerClass = $containerClass;}
-	function setInnerClass($innerClass) {$this->innerClass = $innerClass;}
+	function setContainerClass($containerClass)
+	{
+		$this->containerClass = $containerClass;
+	}
+	function setInnerClass($innerClass)
+	{
+		$this->innerClass = $innerClass;
+	}
 
-	function setViewTitle($viewTitle) {$this->viewTitle = $viewTitle;}
+	function setViewTitle($viewTitle)
+	{
+		$this->viewTitle = $viewTitle;
+	}
 
 	// Template Functions
 
-	function setTemplate($template) {$this->template = $template;}
+	function setTemplate($template)
+	{
+		$this->template = $template;
+	}
 
-	function getTemplates() {
-		if($this->template) $templates[] = $this->template;
+	function getTemplates()
+	{
+		if ($this->template) $templates[] = $this->template;
 		$class = get_class($this);
-		while($class != 'CalendarAbstractView') {
+		while ($class != 'CalendarAbstractView') {
 			$templates[] = $class;
 			$class = get_parent_class($class);
 		}
 		return $templates;
 	}
 
-	function setViewTitleDelimiter($viewTitleDelimiter) {$this->viewTitleDelimiter = $viewTitleDelimiter;}
+	function setViewTitleDelimiter($viewTitleDelimiter)
+	{
+		$this->viewTitleDelimiter = $viewTitleDelimiter;
+	}
 
-	function NameClass() {
+	function NameClass()
+	{
 		$class = "{$this->class}_{$this->name}";
 		$class[0] = strtolower($class[0]);
 		return $class;
 	}
 
-	function showCalendar(Calendar $calendar) {
+	function showCalendar(Calendar $calendar)
+	{
 		$calendars = $this->Calendars($calendar);
 		$templates = $this->getTemplates();
 
 		return $this->customise(array('ID' => $calendar->ID(), 'ContainerClass' => $this->containerClass, 'Calendars' => $calendars))->renderWith($templates);
 	}
-
-
 }
-
