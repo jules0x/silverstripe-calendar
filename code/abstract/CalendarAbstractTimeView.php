@@ -2,10 +2,12 @@
 
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
+use SilverStripe\Core\Extensible;
 
 abstract class CalendarAbstractTimeView extends CalendarAbstractView
 {
-
+	use Extensible;
+	
 	// Attributes
 
 	private $timePeriod;
